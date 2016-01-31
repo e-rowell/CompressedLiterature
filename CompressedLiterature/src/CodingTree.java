@@ -46,19 +46,8 @@ public class CodingTree {
 			treeNode.weight = charFreq.get(c);
 			pq.add(treeNode);
 		}
-		ArrayList<TreeNode<?>> nodes = new ArrayList<TreeNode<?>>();
-		
-		Object[] objArray = pq.toArray();
-		for(int i = 0; i < objArray.length; i++) {
-			Object object = objArray[i];
-			if (object instanceof TreeNode<?>) {
-				nodes.add((TreeNode<?>) object);
-			}
-		}
-		Arrays.sort(nodes.toArray());
 	}
-		
-	
+
 	// (Optional)​String decode(String bits, Map<Character, String> codes)
 
 	private class TreeNode<T> implements Comparable<T> {
@@ -74,13 +63,7 @@ public class CodingTree {
 
 		@Override
 		public int compareTo(T o) {
-			Integer otherInt = (Integer) o;
-			if (this.weight < otherInt)
-				return -1;
-			else if (this.weight == otherInt)
-				return 0;
-			else
-				return 1;
+			return Integer.compare(this.weight, (int) o);
 		}
 	}
 

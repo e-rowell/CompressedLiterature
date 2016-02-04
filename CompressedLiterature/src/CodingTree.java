@@ -25,6 +25,7 @@ public class CodingTree {
 		charFreq = new HashMap<>();
 		pq = new PriorityQueue<>();
 		parseChars(message);
+		//parseCommas(message);
 		createCodes();
 	}
 
@@ -36,7 +37,16 @@ public class CodingTree {
 				charFreq.put(c, charFreq.get(c).intValue() + 1);
 			}
 		}
+	}
 
+	private Integer parseCommas(String message) {
+		charFreq.put('=', 0);
+		for (char c : message.toCharArray()) {
+			if (c == '=') {
+				charFreq.put('=', charFreq.get('=') + 1);
+			}
+		}
+		return charFreq.get('=');
 	}
 
 	private void createCodes() {
@@ -50,7 +60,7 @@ public class CodingTree {
 
 	// (Optional)​String decode(String bits, Map<Character, String> codes)
 
-	private class TreeNode<T> implements Comparable<T> {
+	class TreeNode<T> implements Comparable<TreeNode<T>> {
 		TreeNode<T> root;
 		TreeNode<T> left;
 		TreeNode<T> right;
@@ -62,8 +72,8 @@ public class CodingTree {
 		}
 
 		@Override
-		public int compareTo(T o) {
-			return Integer.compare(this.weight, (int) o);
+		public int compareTo(TreeNode<T> o) {
+			return Integer.compare(this.weight, (Integer) o.weight);
 		}
 	}
 

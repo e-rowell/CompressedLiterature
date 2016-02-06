@@ -25,7 +25,7 @@ public class CodingTree {
 		charFreq = new HashMap<>();
 		pq = new PriorityQueue<>();
 		parseChars(message);
-		//parseCommas(message);
+		// parseCommas(message);
 		createCodes();
 	}
 
@@ -51,30 +51,32 @@ public class CodingTree {
 
 	private void createCodes() {
 		for (Character c : charFreq.keySet()) {
-			TreeNode<Character> treeNode = new TreeNode<>();
-			treeNode.character = c;
-			treeNode.weight = charFreq.get(c);
+			TreeNode<Character> treeNode = new TreeNode<>(c, charFreq.get(c), null, null);
 			pq.add(treeNode);
 		}
 	}
 
 	// (Optional)​String decode(String bits, Map<Character, String> codes)
-
-	class TreeNode<T> implements Comparable<TreeNode<T>> {
-		TreeNode<T> root;
-		TreeNode<T> left;
-		TreeNode<T> right;
-		T character;
-		Integer weight;
-
-		public TreeNode() {
-
+	public class TreeNode<T> implements Comparable {
+		public TreeNode(char c, int freq, TreeNode l, TreeNode r) {
+			frequency = freq;
+			symbol = c;
+			left = l;
+			right = r;
 		}
 
-		@Override
-		public int compareTo(TreeNode<T> o) {
-			return Integer.compare(this.weight, (Integer) o.weight);
+		public int compareTo(Object x) {
+			TreeNode test = (TreeNode) x;
+			if (frequency > test.frequency)
+				return 1;
+			if (frequency == test.frequency)
+				return 0;
+			return -1;
 		}
+
+		char symbol;
+		TreeNode left, right;
+		int frequency;
 	}
 
 }

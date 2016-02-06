@@ -33,10 +33,8 @@ public class Main {
 		CodingTree tree = new CodingTree(str.toString());
 		Object[] nodes = tree.pq.toArray();
 		for(int i = 0; i < nodes.length; i++) {
-			CodingTree.TreeNode<Character> c =  (CodingTree.TreeNode<Character>) nodes[i];
-			if(c.character == '{'){
-			System.out.println("character:" + c.toString() + " weight:" + c.weight);
-			}
+			CodingTree.TreeNode<Character> node =  (CodingTree.TreeNode<Character>) nodes[i];
+			System.out.println("character:" + node.symbol + " weight:" + node.frequency);
 		}
 		System.out.println("Total char count: " + tree.charFreq.size());
 

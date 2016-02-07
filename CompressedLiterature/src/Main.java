@@ -1,14 +1,13 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import javax.swing.tree.TreeNode;
-
-
 public class Main {
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		BufferedReader reader = null;
 		StringBuilder str = new StringBuilder();
@@ -30,14 +29,29 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}*/
-		CodingTree tree = new CodingTree(str.toString());
+		decodeTree();
+		
+		
+		CodingTree<Character> tree = new CodingTree<Character>(str.toString());
 		Object[] nodes = tree.pq.toArray();
 		for(int i = 0; i < nodes.length; i++) {
-			CodingTree.TreeNode<Character> node =  (CodingTree.TreeNode<Character>) nodes[i];
-			System.out.println("character:" + node.symbol + " weight:" + node.frequency);
+			CodingTree<Character>.TreeNode node = (CodingTree<Character>.TreeNode) nodes[i];
+			System.out.println("character:" + node.myData + " weight:" + node.myFrequency);
 		}
 		System.out.println("Total char count: " + tree.charFreq.size());
 
+	}
+	private static void writeCodes(CodingTree<Character> tree) {
+		StringBuilder codes = new StringBuilder();
+		codes.append('{');
+		for(String code: tree.codes.values()) {
+			codes.append(tree.codes.get(code) + "=" + code + "/n");
+		}
+		codes.append('}');
+	}
+	private static void decodeTree() {
+		File file = new File("");
+		
 	}
 
 }

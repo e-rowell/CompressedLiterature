@@ -1,9 +1,21 @@
+
+/* Authors: Nicholas Hays and Ethan Rowell
+ * Date: 2/9/2016
+ * Assignment 3: Compressed Literature
+ * Presented For: Dr. Chris Marriott
+ */
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-//
+/**
+ * 
+ * A coding tree object decodes characters represented as strings in ASCII into
+ * a compressed size using Huffman's algorithm.
+ * 
+ * @author Nicholas Hays & Ethan Rowell
+ */
 public class CodingTree<T> {
 
 	// map of characters in the message to binary codes
@@ -11,13 +23,16 @@ public class CodingTree<T> {
 	public Map<T, Integer> charFreq;
 	PriorityQueue<TreeNode> pq;
 	StringBuilder myHuffCode;
+
 	// message encoded using the Huffman codes.
 	List<Byte> bits;
 
-	/*
-	 * a constructor that takes the text of a message to be compressed. The
-	 * constructor is responsible for calling all private methods that carry out
-	 * the Huffman coding algorithm.
+	/**
+	 * Constructor that encodes the input message to compress. The constructor
+	 * is responsible for calling all private methods that carry out the Huffman
+	 * coding algorithm.
+	 * 
+	 * @param messaage the message to be encoded.
 	 */
 	public CodingTree(String message) {
 		myHuffCode = new StringBuilder();
@@ -30,36 +45,55 @@ public class CodingTree<T> {
 		buildHuffman();
 	}
 
+	/**
+	 * Builds Huffman codes by recursively traversing the tree, generating a '0'
+	 * if left traverse or '1' if right traverse. Once a leaf node is
+	 * discovered, the leaf nodes associated data (i.e character) is mapped to
+	 * the generated code of traversal (i.e x -> 100110001110).
+	 * 
+	 * @param root the TreeNode to build a code from.
+	 */
 	private void buildCodes(TreeNode root) {
 		if (root == null)
 			return;
-		if(root.myLeft != null) 
+		if (root.myLeft != null)
 			myHuffCode.append(0);
 		buildCodes(root.myLeft);
-		if(root.myRight != null) {
+		if (root.myRight != null) {
 			myHuffCode.append(0);
 		}
 		buildCodes(root.myRight);
-		if(isLeaf(root)) {
+		if (isLeaf(root)) {
 			codes.put((T) root.myData, myHuffCode.toString());
 		}
 		myHuffCode.deleteCharAt(myHuffCode.length() - 1);
 		return;
 	}
 
-
+	/**
+	 * Determines if this node is a leaf node.
+	 * 
+	 * @param root the TreeNode to be checked against.
+	 * @return boolean determines if this TreeNode is a leaf node.
+	 */
 	private boolean isLeaf(TreeNode root) {
 		boolean theTruth = false;
 		if (root.myLeft == null && root.myRight == null) {
-			theTruth = true;	
-		} 
+			theTruth = true;
+		}
 		return theTruth;
 	}
-	
+
 	public String decode(Character c) {
 		return codes.get(c);
 	}
 
+	/**
+	 * Maps each character in the input message to its frequency. i.e (e ->
+	 * 10560, x -> 123, , -> 56627...).
+	 * 
+	 * @param message the message from the input string.
+	 */
 	@SuppressWarnings("unchecked")
 	private void parseChars(String message) {
 		for (Character c : message.toCharArray()) {
@@ -71,16 +105,19 @@ public class CodingTree<T> {
 		}
 	}
 
-	/*private Integer parseCommas(String message) {
-		charFreq.put('=', 0);
-		for (char c : message.toCharArray()) {
-			if (c == '=') {
-				charFreq.put('=', charFreq.get('=') + 1);
-			}
-		}
-		return charFreq.get('=');
-	}*/
+	/*
+	 * private Integer parseCommas(String message) { charFreq.put('=', 0); for
+	 * (char c : message.toCharArray()) { if (c == '=') { charFreq.put('=',
+	 * charFreq.get('=') + 1); } } return charFreq.get('='); }
+	 */
 
+	/**
+	 * Builds Huffman tree by combining the minimum 2 character frequencies in
+	 * the priority queue, then adds the resulting new node back into the queue.
+	 * Repeats until there is one node in the queue. This node represents the
+	 * Huffman tree.
+	 * 
+	 */
 	private void buildHuffman() {
 		while (pq.size() >= 1) {
 			TreeNode node1 = getMin();
@@ -90,16 +127,32 @@ public class CodingTree<T> {
 		buildCodes(getMin());
 	}
 
+	/**
+	 * Creates a new TreeNode by combining the weights of the input nodes, and
+	 * adding each to its left and right subtree.
+	 * 
+	 * @param node1 TreeNode left subtree.
+	 * @param node2 TreeNode right subtree.
+	 * @return TreeNode with new frequency and node1 and node2 subtrees as children.
+	 */
 	private TreeNode combineWeights(TreeNode node1, TreeNode node2) {
 		int newFreq = node1.myFrequency + node2.myFrequency;
 		TreeNode node = new TreeNode(null, newFreq, node1, node2);
 		return node;
 	}
 
+	/**
+	 * Finds the minimum node in the tree.
+	 * 
+	 * @return the TreeNode corresponding to the Node with the least character frequency.
+	 */
 	private TreeNode getMin() {
 		return pq.poll();
 	}
 
+	/**
+	 * Transfers characters in hashmap to priority queue.
+	 */
 	private void genFreq() {
 		for (T c : charFreq.keySet()) {
 			TreeNode treeNode = new TreeNode(c, charFreq.get(c), null, null);
@@ -107,15 +160,48 @@ public class CodingTree<T> {
 		}
 	}
 
-	// (Optional)​String decode(String bits, Map<Character, String> codes)
-	 class TreeNode implements Comparable<T> {
+	/**
+	 * Decodes compressed Huffman file back to original work.
+	 * 
+	 * @param bits the encoded huffman bits.
+	 * @param codes the map that associates each character to its String.
+	 * @return the decoded message back to original. 
+	 */
+	String decode(String bits, Map<Character, String> codes) {
+		// To do - method implementation (Optional)
+		return bits;
+	}
+
+	/**
+	 * Prototype for each node stored in the Huffman tree.
+	 *
+	 * @author Nicholas Hays & Ethan Rowell.
+	 */
+	class TreeNode implements Comparable<T> {
+		
+		/**
+		 * Constructor that stores data (i.e character), its frequency, and
+		 * its left and right child nodes. 
+		 * 
+		 * @param data the character to hold.
+		 * @param freq this nodes data frequency. 
+		 * @param left this nodes left child.
+		 * @param right this nodes right child. 
+		 */
 		public TreeNode(T data, int freq, TreeNode left, TreeNode right) {
 			myFrequency = freq;
 			myData = data;
 			myLeft = left;
 			myRight = right;
 		}
-
+		
+		/**
+		 * Compares this node frequency to other nodes Frequency.
+		 * 
+		 * @param otherNode the other node to compare against.
+		 * @return an integer value representing -1 if this node is less than the other node, 0 if both nodes have same 
+		 * frequency, or 1 if this node's frequency is greater than the other nodes frequency. 
+		 */
 		public int compareTo(Object x) {
 			@SuppressWarnings("unchecked")
 			TreeNode test = (TreeNode) x;

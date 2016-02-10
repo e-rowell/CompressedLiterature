@@ -76,5 +76,4 @@ public class CodingTree {
 			return Integer.compare(this.weight, (Integer) o.weight);
 		}
 	}
-
 }

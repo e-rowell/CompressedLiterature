@@ -21,22 +21,22 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	/*	BufferedWriter bw;
+		/*	
+		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter("test.txt"));
 			bw.write(str.toString());
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
+		*/
+		
 		CodingTree tree = new CodingTree(str.toString());
 		Object[] nodes = tree.pq.toArray();
 		for(int i = 0; i < nodes.length; i++) {
 			CodingTree.TreeNode<Character> c =  (CodingTree.TreeNode<Character>) nodes[i];
-			if(c.character == '{'){
-			System.out.println("character:" + c.toString() + " weight:" + c.weight);
-			}
+			System.out.println("character: " + (int)(c.character) + " weight:" + c.weight);
 		}
 		System.out.println("Total char count: " + tree.charFreq.size());
 

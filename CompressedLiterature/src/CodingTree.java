@@ -19,8 +19,8 @@ import java.util.PriorityQueue;
 public class CodingTree<T> {
 
 	// map of characters in the message to binary codes
-	public Map<T, String> codes;
-	public Map<T, Integer> charFreq;
+	public Map<Character, Byte[]> codes;
+	public Map<Character, Integer> charFreq;
 	PriorityQueue<TreeNode> pq;
 	StringBuilder myHuffCode;
 
@@ -60,13 +60,18 @@ public class CodingTree<T> {
 			myHuffCode.append(0);
 		buildCodes(root.myLeft);
 		if (root.myRight != null) {
-			myHuffCode.append(0);
+			myHuffCode.append(1);
 		}
 		buildCodes(root.myRight);
 		if (isLeaf(root)) {
-			codes.put((T) root.myData, myHuffCode.toString());
+			Byte[] array = //Byte.parseByte(myHuffCode.toString());
+			
+			
+			codes.put((Character) root.myData, myHuffCode.toString());
 		}
-		myHuffCode.deleteCharAt(myHuffCode.length() - 1);
+		if (myHuffCode.length() > 0) {
+			myHuffCode.deleteCharAt(myHuffCode.length() - 1);
+		}
 		return;
 	}
 
@@ -94,13 +99,12 @@ public class CodingTree<T> {
 	 * 
 	 * @param message the message from the input string.
 	 */
-	@SuppressWarnings("unchecked")
 	private void parseChars(String message) {
 		for (Character c : message.toCharArray()) {
 			if (charFreq.get(c) == null) {
-				charFreq.put((T) c, 1);
+				charFreq.put((Character) c, 1);
 			} else {
-				charFreq.put((T) c, charFreq.get(c).intValue() + 1);
+				charFreq.put((Character) c, charFreq.get(c).intValue() + 1);
 			}
 		}
 	}
@@ -119,11 +123,16 @@ public class CodingTree<T> {
 	 * 
 	 */
 	private void buildHuffman() {
-		while (pq.size() >= 1) {
+		while (pq.size() > 1) {
 			TreeNode node1 = getMin();
 			TreeNode node2 = getMin();
 			pq.add(combineWeights(node1, node2));
 		}
+		
+		for(Character data : codes.keySet()) {
+			System.out.println(data);
+		}
+		
 		buildCodes(getMin());
 	}
 
@@ -154,7 +163,7 @@ public class CodingTree<T> {
 	 * Transfers characters in hashmap to priority queue.
 	 */
 	private void genFreq() {
-		for (T c : charFreq.keySet()) {
+		for (Character c : charFreq.keySet()) {
 			TreeNode treeNode = new TreeNode(c, charFreq.get(c), null, null);
 			pq.add(treeNode);
 		}
@@ -188,7 +197,7 @@ public class CodingTree<T> {
 		 * @param left this nodes left child.
 		 * @param right this nodes right child. 
 		 */
-		public TreeNode(T data, int freq, TreeNode left, TreeNode right) {
+		public TreeNode(Character data, int freq, TreeNode left, TreeNode right) {
 			myFrequency = freq;
 			myData = data;
 			myLeft = left;
@@ -212,7 +221,7 @@ public class CodingTree<T> {
 			return -1;
 		}
 
-		public T myData;
+		public Character myData;
 		TreeNode myLeft, myRight;
 		int myFrequency;
 		byte myCode;

@@ -1,9 +1,6 @@
 
-/* Authors: Nicholas Hays and Ethan Rowell
- * Date: 2/9/2016
- * Assignment 3: Compressed Literature
- * Presented For: Dr. Chris Marriott
- */
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +16,13 @@ import java.util.PriorityQueue;
 public class CodingTree<T> {
 
 	// map of characters in the message to binary codes
-	public Map<Character, Byte[]> codes;
+	public Map<Character, byte[]> codes;
 	public Map<Character, Integer> charFreq;
 	PriorityQueue<TreeNode> pq;
 	StringBuilder myHuffCode;
 
 	// message encoded using the Huffman codes.
-	List<Byte> bits;
+	List<byte[]> bits;
 
 	/**
 	 * Constructor that encodes the input message to compress. The constructor
@@ -39,6 +36,7 @@ public class CodingTree<T> {
 		codes = new HashMap<>();
 		charFreq = new HashMap<>();
 		pq = new PriorityQueue<>();
+		bits = new ArrayList<byte[]>();
 		parseChars(message);
 		// parseCommas(message);
 		genFreq();
@@ -64,15 +62,26 @@ public class CodingTree<T> {
 		}
 		buildCodes(root.myRight);
 		if (isLeaf(root)) {
-			Byte[] array = //Byte.parseByte(myHuffCode.toString());
-			
-			
-			codes.put((Character) root.myData, myHuffCode.toString());
+			BitSet bitSet = new BitSet();
+			bitSet = getBitSet(myHuffCode.toString());
+			codes.put((Character) root.myData, bitSet.toByteArray());
 		}
 		if (myHuffCode.length() > 0) {
 			myHuffCode.deleteCharAt(myHuffCode.length() - 1);
 		}
 		return;
+	}
+	
+	private BitSet getBitSet(String message) {
+		BitSet bitSet = new BitSet();
+		for (int i = 0; i < message.length(); i++) {
+			if (message.charAt(i) == '0') {
+				bitSet.set(i, false);
+			} else {
+				bitSet.set(i, true);
+			}
+		}
+		return bitSet;
 	}
 
 	/**
@@ -89,7 +98,7 @@ public class CodingTree<T> {
 		return theTruth;
 	}
 
-	public String decode(Character c) {
+	public byte[] decode(Character c) {
 		return codes.get(c);
 	}
 

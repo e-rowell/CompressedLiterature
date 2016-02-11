@@ -4,7 +4,6 @@
  * Presented For: Dr. Chris Marriott
  */
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,6 @@ public class CodingTree<T> {
 		pq = new PriorityQueue<>();
 		bits = new ArrayList<>();
 		parseChars(message);
-		// parseCommas(message);
 		genFreq();
 		buildHuffman();
 	}
@@ -72,19 +70,6 @@ public class CodingTree<T> {
 			myHuffCode.deleteCharAt(myHuffCode.length() - 1);
 		}
 		return;
-	}
-	
-	
-	private BitSet getBitSet(String message) {
-		BitSet bitSet = new BitSet();
-		for (int i = 0; i < message.length(); i++) {
-			if (message.charAt(i) == '0') {
-				bitSet.set(i, false);
-			} else {
-				bitSet.set(i, true);
-			}
-		}
-		return bitSet;
 	}
 
 	/**
@@ -120,12 +105,6 @@ public class CodingTree<T> {
 			}
 		}
 	}
-
-	/*
-	 * private Integer parseCommas(String message) { charFreq.put('=', 0); for
-	 * (char c : message.toCharArray()) { if (c == '=') { charFreq.put('=',
-	 * charFreq.get('=') + 1); } } return charFreq.get('='); }
-	 */
 
 	/**
 	 * Builds Huffman tree by combining the minimum 2 character frequencies in

@@ -1,4 +1,8 @@
-
+/* Authors: Nicholas Hays and Ethan Rowell
+ * Date: 2/9/2016
+ * Assignment 3: Compressed Literature
+ * Presented For: Dr. Chris Marriott
+ */
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;

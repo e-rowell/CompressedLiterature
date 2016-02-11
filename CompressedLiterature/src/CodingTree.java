@@ -16,13 +16,13 @@ import java.util.PriorityQueue;
 public class CodingTree<T> {
 
 	// map of characters in the message to binary codes
-	public Map<Character, byte[]> codes;
+	public Map<Character, String> codes;
 	public Map<Character, Integer> charFreq;
 	PriorityQueue<TreeNode> pq;
 	StringBuilder myHuffCode;
 
 	// message encoded using the Huffman codes.
-	List<byte[]> bits;
+	List<Integer> bits;
 
 	/**
 	 * Constructor that encodes the input message to compress. The constructor
@@ -36,7 +36,7 @@ public class CodingTree<T> {
 		codes = new HashMap<>();
 		charFreq = new HashMap<>();
 		pq = new PriorityQueue<>();
-		bits = new ArrayList<byte[]>();
+		bits = new ArrayList<>();
 		parseChars(message);
 		// parseCommas(message);
 		genFreq();
@@ -62,15 +62,14 @@ public class CodingTree<T> {
 		}
 		buildCodes(root.myRight);
 		if (isLeaf(root)) {
-			BitSet bitSet = new BitSet();
-			bitSet = getBitSet(myHuffCode.toString());
-			codes.put((Character) root.myData, bitSet.toByteArray());
+			codes.put((Character) root.myData, myHuffCode.toString());
 		}
 		if (myHuffCode.length() > 0) {
 			myHuffCode.deleteCharAt(myHuffCode.length() - 1);
 		}
 		return;
 	}
+	
 	
 	private BitSet getBitSet(String message) {
 		BitSet bitSet = new BitSet();
@@ -98,7 +97,7 @@ public class CodingTree<T> {
 		return theTruth;
 	}
 
-	public byte[] decode(Character c) {
+	public String decode(Character c) {
 		return codes.get(c);
 	}
 

@@ -3,9 +3,7 @@
  * Assignment 3: Compressed Literature
  * Presented For: Dr. Chris Marriott
  */
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
@@ -25,8 +23,7 @@ public class CodingTree<T> {
 	StringBuilder myHuffCode;
 
 	// message encoded using the Huffman codes.
-	List<Integer> bits;
-
+	StringBuilder bits;
 	/**
 	 * Constructor that encodes the input message to compress. The constructor
 	 * is responsible for calling all private methods that carry out the Huffman
@@ -39,7 +36,7 @@ public class CodingTree<T> {
 		codes = new HashMap<>();
 		charFreq = new HashMap<>();
 		pq = new PriorityQueue<>();
-		bits = new ArrayList<>();
+		bits = new StringBuilder();
 		parseChars(message);
 		genFreq();
 		buildHuffman();
@@ -125,6 +122,13 @@ public class CodingTree<T> {
 		}
 		
 		buildCodes(getMin());
+	}
+
+	public String encodeText(StringBuilder str) {
+		for (Character character : str.toString().toCharArray()) {
+			bits.append(this.codes.get(character));
+		}
+		return bits.toString();
 	}
 
 	/**

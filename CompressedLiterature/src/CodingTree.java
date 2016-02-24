@@ -20,10 +20,10 @@ public class CodingTree<T> {
 	public Map<Character, String> codes;
 	public Map<Character, Integer> charFreq;
 	PriorityQueue<TreeNode> pq;
-	StringBuilder myHuffCode;
+	StringBuilder myCharHuffCode;
 
 	// message encoded using the Huffman codes.
-	StringBuilder bits;
+	StringBuilder myEncodedText;
 	/**
 	 * Constructor that encodes the input message to compress. The constructor
 	 * is responsible for calling all private methods that carry out the Huffman
@@ -32,21 +32,23 @@ public class CodingTree<T> {
 	 * @param messaage the message to be encoded.
 	 */
 	public CodingTree(String message) {
-		myHuffCode = new StringBuilder();
+		myCharHuffCode = new StringBuilder();
 		codes = new HashMap<>();
 		charFreq = new HashMap<>();
 		pq = new PriorityQueue<>();
-		bits = new StringBuilder();
+		myEncodedText = new StringBuilder();
 		parseChars(message);
 		genFreq();
 		buildHuffman();
 	}
 
 	/**
-	 * Builds Huffman codes by recursively traversing the tree, generating a '0'
+	 * Builds Huffman codes by recursively traversing the root, generating a '0'
 	 * if left traverse or '1' if right traverse. Once a leaf node is
 	 * discovered, the leaf nodes associated data (i.e character) is mapped to
-	 * the generated code of traversal (i.e x -> 100110001110).
+	 * the generated code of traversal (i.e x -> 100110001110). On the way up the tree,
+	 * if the huffman code length is greater than 0, the last '1' or '0' to be added
+	 * will be deleted.
 	 * 
 	 * @param root the TreeNode to build a code from.
 	 */
@@ -54,17 +56,17 @@ public class CodingTree<T> {
 		if (root == null)
 			return;
 		if (root.myLeft != null)
-			myHuffCode.append(0);
+			myCharHuffCode.append(0);
 		buildCodes(root.myLeft);
 		if (root.myRight != null) {
-			myHuffCode.append(1);
+			myCharHuffCode.append(1);
 		}
 		buildCodes(root.myRight);
 		if (isLeaf(root)) {
-			codes.put((Character) root.myData, myHuffCode.toString());
+			codes.put((Character) root.myData, myCharHuffCode.toString());
 		}
-		if (myHuffCode.length() > 0) {
-			myHuffCode.deleteCharAt(myHuffCode.length() - 1);
+		if (myCharHuffCode.length() > 0) {
+			myCharHuffCode.deleteCharAt(myCharHuffCode.length() - 1);
 		}
 		return;
 	}
@@ -104,10 +106,11 @@ public class CodingTree<T> {
 	}
 
 	/**
-	 * Builds Huffman tree by combining the minimum 2 character frequencies in
-	 * the priority queue, then adds the resulting new node back into the queue.
+	 * Builds Huffman tree by creating a new node from combining the minimum 2 character frequencies in
+	 * the priority queue, and then adds the resulting new node back into the queue.
 	 * Repeats until there is one node in the queue. This node represents the
-	 * Huffman tree.
+	 * Huffman tree. Once the huffman tree is built in priority queue, the root node
+	 * is then traversed by 'buildcodes' to generate all variable length huffman codes.
 	 * 
 	 */
 	private void buildHuffman() {
@@ -126,9 +129,9 @@ public class CodingTree<T> {
 
 	public String encodeText(StringBuilder str) {
 		for (Character character : str.toString().toCharArray()) {
-			bits.append(this.codes.get(character));
+			myEncodedText.append(this.codes.get(character));
 		}
-		return bits.toString();
+		return myEncodedText.toString();
 	}
 
 	/**

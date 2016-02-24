@@ -1,3 +1,4 @@
+
 /* Authors: Nicholas Hays and Ethan Rowell
  * Date: 2/9/2016
  * Assignment 3: Compressed Literature
@@ -24,12 +25,15 @@ public class CodingTree<T> {
 
 	// message encoded using the Huffman codes.
 	StringBuilder myEncodedText;
+	private TreeNode root;
+
 	/**
 	 * Constructor that encodes the input message to compress. The constructor
 	 * is responsible for calling all private methods that carry out the Huffman
 	 * coding algorithm.
 	 * 
-	 * @param messaage the message to be encoded.
+	 * @param messaage
+	 *            the message to be encoded.
 	 */
 	public CodingTree(String message) {
 		myCharHuffCode = new StringBuilder();
@@ -46,11 +50,12 @@ public class CodingTree<T> {
 	 * Builds Huffman codes by recursively traversing the root, generating a '0'
 	 * if left traverse or '1' if right traverse. Once a leaf node is
 	 * discovered, the leaf nodes associated data (i.e character) is mapped to
-	 * the generated code of traversal (i.e x -> 100110001110). On the way up the tree,
-	 * if the huffman code length is greater than 0, the last '1' or '0' to be added
-	 * will be deleted.
+	 * the generated code of traversal (i.e x -> 100110001110). On the way up
+	 * the tree, if the huffman code length is greater than 0, the last '1' or
+	 * '0' to be added will be deleted.
 	 * 
-	 * @param root the TreeNode to build a code from.
+	 * @param root
+	 *            the TreeNode to build a code from.
 	 */
 	private void buildCodes(TreeNode root) {
 		if (root == null)
@@ -74,7 +79,8 @@ public class CodingTree<T> {
 	/**
 	 * Determines if this node is a leaf node.
 	 * 
-	 * @param root the TreeNode to be checked against.
+	 * @param root
+	 *            the TreeNode to be checked against.
 	 * @return boolean determines if this TreeNode is a leaf node.
 	 */
 	private boolean isLeaf(TreeNode root) {
@@ -93,7 +99,8 @@ public class CodingTree<T> {
 	 * Maps each character in the input message to its frequency. i.e (e ->
 	 * 10560, x -> 123, , -> 56627...).
 	 * 
-	 * @param message the message from the input string.
+	 * @param message
+	 *            the message from the input string.
 	 */
 	private void parseChars(String message) {
 		for (Character c : message.toCharArray()) {
@@ -106,11 +113,12 @@ public class CodingTree<T> {
 	}
 
 	/**
-	 * Builds Huffman tree by creating a new node from combining the minimum 2 character frequencies in
-	 * the priority queue, and then adds the resulting new node back into the queue.
-	 * Repeats until there is one node in the queue. This node represents the
-	 * Huffman tree. Once the huffman tree is built in priority queue, the root node
-	 * is then traversed by 'buildcodes' to generate all variable length huffman codes.
+	 * Builds Huffman tree by creating a new node from combining the minimum 2
+	 * character frequencies in the priority queue, and then adds the resulting
+	 * new node back into the queue. Repeats until there is one node in the
+	 * queue. This node represents the Huffman tree. Once the huffman tree is
+	 * built in priority queue, the root node is then traversed by 'buildcodes'
+	 * to generate all variable length huffman codes.
 	 * 
 	 */
 	private void buildHuffman() {
@@ -119,17 +127,18 @@ public class CodingTree<T> {
 			TreeNode node2 = getMin();
 			pq.add(combineWeights(node1, node2));
 		}
-		
-		for(Character data : codes.keySet()) {
-			System.out.println(data);
-		}
-		
+		root = pq.peek();
 		buildCodes(getMin());
 	}
 
 	public String encodeText(StringBuilder str) {
+		int x = 0;
 		for (Character character : str.toString().toCharArray()) {
+			x++;
 			myEncodedText.append(this.codes.get(character));
+			if(x < 5) {
+			System.out.println(this.codes.get(character));
+			}
 		}
 		return myEncodedText.toString();
 	}
@@ -138,9 +147,12 @@ public class CodingTree<T> {
 	 * Creates a new TreeNode by combining the weights of the input nodes, and
 	 * adding each to its left and right subtree.
 	 * 
-	 * @param node1 TreeNode left subtree.
-	 * @param node2 TreeNode right subtree.
-	 * @return TreeNode with new frequency and node1 and node2 subtrees as children.
+	 * @param node1
+	 *            TreeNode left subtree.
+	 * @param node2
+	 *            TreeNode right subtree.
+	 * @return TreeNode with new frequency and node1 and node2 subtrees as
+	 *         children.
 	 */
 	private TreeNode combineWeights(TreeNode node1, TreeNode node2) {
 		int newFreq = node1.myFrequency + node2.myFrequency;
@@ -151,7 +163,8 @@ public class CodingTree<T> {
 	/**
 	 * Finds the minimum node in the tree.
 	 * 
-	 * @return the TreeNode corresponding to the Node with the least character frequency.
+	 * @return the TreeNode corresponding to the Node with the least character
+	 *         frequency.
 	 */
 	private TreeNode getMin() {
 		return pq.poll();
@@ -170,13 +183,33 @@ public class CodingTree<T> {
 	/**
 	 * Decodes compressed Huffman file back to original work.
 	 * 
-	 * @param bits the encoded huffman bits.
-	 * @param codes the map that associates each character to its String.
-	 * @return the decoded message back to original. 
+	 * @param the encoded binary string.
+	 * @return the original text.
 	 */
-	String decode(String bits, Map<Character, String> codes) {
-		// To do - method implementation (Optional)
-		return bits;
+	public StringBuilder decode(String binaryString) {
+		StringBuilder decodedString = new StringBuilder();
+		TreeNode node = root;
+
+		for (Character character : binaryString.toCharArray()) {
+			if (character == '0') {
+				//System.out.println("0");
+				node = node.myLeft;
+				if (isLeaf(node)) {
+					decodedString.append(node.myData);
+					//System.out.println(node.myData);
+					node = root;
+				}
+			} else {
+			//	System.out.println("1");
+				node = node.myRight;
+				if (isLeaf(node)) {
+					decodedString.append(node.myData);
+					//System.out.println(decodedString.length());
+					node = root;
+				}
+			}
+		}
+		return decodedString;
 	}
 
 	/**
@@ -185,15 +218,19 @@ public class CodingTree<T> {
 	 * @author Nicholas Hays & Ethan Rowell.
 	 */
 	class TreeNode implements Comparable<T> {
-		
+
 		/**
-		 * Constructor that stores data (i.e character), its frequency, and
-		 * its left and right child nodes. 
+		 * Constructor that stores data (i.e character), its frequency, and its
+		 * left and right child nodes.
 		 * 
-		 * @param data the character to hold.
-		 * @param freq this nodes data frequency. 
-		 * @param left this nodes left child.
-		 * @param right this nodes right child. 
+		 * @param data
+		 *            the character to hold.
+		 * @param freq
+		 *            this nodes data frequency.
+		 * @param left
+		 *            this nodes left child.
+		 * @param right
+		 *            this nodes right child.
 		 */
 		public TreeNode(Character data, int freq, TreeNode left, TreeNode right) {
 			myFrequency = freq;
@@ -201,13 +238,16 @@ public class CodingTree<T> {
 			myLeft = left;
 			myRight = right;
 		}
-		
+
 		/**
 		 * Compares this node frequency to other nodes Frequency.
 		 * 
-		 * @param otherNode the other node to compare against.
-		 * @return an integer value representing -1 if this node is less than the other node, 0 if both nodes have same 
-		 * frequency, or 1 if this node's frequency is greater than the other nodes frequency. 
+		 * @param otherNode
+		 *            the other node to compare against.
+		 * @return an integer value representing -1 if this node is less than
+		 *         the other node, 0 if both nodes have same frequency, or 1 if
+		 *         this node's frequency is greater than the other nodes
+		 *         frequency.
 		 */
 		public int compareTo(Object x) {
 			@SuppressWarnings("unchecked")

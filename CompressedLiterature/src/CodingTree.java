@@ -1,4 +1,3 @@
-
 /* Authors: Nicholas Hays and Ethan Rowell
  * Date: 2/9/2016
  * Assignment 3: Compressed Literature
@@ -15,7 +14,7 @@ import java.util.PriorityQueue;
  * 
  * @author Nicholas Hays & Ethan Rowell
  */
-public class CodingTree<T> {
+public class CodingTree {
 
 	// map of characters in the message to binary codes
 	public Map<Character, String> codes;
@@ -132,13 +131,9 @@ public class CodingTree<T> {
 	}
 
 	public String encodeText(StringBuilder str) {
-		int x = 0;
+
 		for (Character character : str.toString().toCharArray()) {
-			x++;
 			myEncodedText.append(this.codes.get(character));
-			if(x < 5) {
-			System.out.println(this.codes.get(character));
-			}
 		}
 		return myEncodedText.toString();
 	}
@@ -186,30 +181,23 @@ public class CodingTree<T> {
 	 * @param the encoded binary string.
 	 * @return the original text.
 	 */
-	public StringBuilder decode(String binaryString) {
+	public String decode(String bits, Map<Character, String> codes) {
 		StringBuilder decodedString = new StringBuilder();
-		TreeNode node = root;
-
-		for (Character character : binaryString.toCharArray()) {
-			if (character == '0') {
-				//System.out.println("0");
-				node = node.myLeft;
-				if (isLeaf(node)) {
-					decodedString.append(node.myData);
-					//System.out.println(node.myData);
-					node = root;
-				}
-			} else {
-			//	System.out.println("1");
-				node = node.myRight;
-				if (isLeaf(node)) {
-					decodedString.append(node.myData);
-					//System.out.println(decodedString.length());
-					node = root;
-				}
+		StringBuilder tempString = new StringBuilder();
+		Map<String, Character> reverseMap = new HashMap<>();
+		for(Map.Entry<Character, String> entry: codes.entrySet()) {
+			reverseMap.put(entry.getValue(), entry.getKey());
+		}
+		Character temp;
+		for (Character character : bits.toCharArray()) {
+			tempString.append(character);
+			temp = reverseMap.get(tempString.toString());
+			if(temp != null) {
+				decodedString.append(temp);
+				tempString.setLength(0);
 			}
 		}
-		return decodedString;
+		return decodedString.toString();
 	}
 
 	/**
@@ -217,20 +205,16 @@ public class CodingTree<T> {
 	 *
 	 * @author Nicholas Hays & Ethan Rowell.
 	 */
-	class TreeNode implements Comparable<T> {
+	class TreeNode implements Comparable {
 
 		/**
 		 * Constructor that stores data (i.e character), its frequency, and its
 		 * left and right child nodes.
 		 * 
-		 * @param data
-		 *            the character to hold.
-		 * @param freq
-		 *            this nodes data frequency.
-		 * @param left
-		 *            this nodes left child.
-		 * @param right
-		 *            this nodes right child.
+		 * @param data the character to hold.
+		 * @param freq this nodes data frequency.
+		 * @param left this nodes left child.
+		 * @param right this nodes right child.
 		 */
 		public TreeNode(Character data, int freq, TreeNode left, TreeNode right) {
 			myFrequency = freq;
@@ -250,7 +234,6 @@ public class CodingTree<T> {
 		 *         frequency.
 		 */
 		public int compareTo(Object x) {
-			@SuppressWarnings("unchecked")
 			TreeNode test = (TreeNode) x;
 			if (myFrequency > test.myFrequency)
 				return 1;
